@@ -58,10 +58,9 @@ parser.add_argument('--val_tsv_path', type=str, default='taidi_data/valid_imgs.t
                     help='val_tsv_path')
 opts = parser.parse_args()
 # Paths to your files
-data_csv_path = 'csv/ImageWordData.csv'  # Your data.csv path
-train_tsv_path = 'taidi_data/train_imgs.tsv'  # Generated train_imgs.tsv
-val_tsv_path = 'taidi_data/val_imgs.tsv'  # Generated val_imgs.tsv
-test_tsv_path = 'taidi_data/test_imgs.tsv'
+data_csv_path = opts.data_csv_path  # Your data.csv path
+train_tsv_path = opts.train_tsv_path  # Generated train_imgs.tsv
+val_tsv_path = opts.val_tsv_path  # Generated val_imgs.tsv
 # Load data
 data = load_data_csv(data_csv_path)
 train_image_ids = set(load_image_splits(train_tsv_path))

@@ -37,7 +37,7 @@ warnings.filterwarnings('ignore')
 parser = argparse.ArgumentParser()
 parser.add_argument('--data_csv_path', type=str, default='csv/ImageWordData.csv',
                     help='data_csv_path')
-parser.add_argument('--test_tsv_path', type=str, default='taidi_data/train_imgs.tsv',
+parser.add_argument('--test_tsv_path', type=str, default='taidi_data/test.tsv',
                     help='test_tsv_path')
 parser.add_argument('--save_jsonl_path', type=str, default='taidi_data/test_texts.jsonl',
                     help='save_jsonl_path')

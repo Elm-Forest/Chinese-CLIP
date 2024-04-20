@@ -49,8 +49,7 @@ def save_images_to_tsv(image_folder, val_count, train_dir):
     write_to_file(train_files, train_dir)
     if val_count != 0:
         write_to_file(val_files, "taidi_data/valid_imgs.tsv")
-    else:
-        write_to_file(train_files, "taidi_data/test_imgs.tsv")
+
 
 
 warnings.filterwarnings('ignore')
