@@ -67,4 +67,4 @@ train_image_ids = set(load_image_splits(train_tsv_path))
 val_image_ids = set(load_image_splits(val_tsv_path))
 # Save to JSONL files
 save_jsonl(data, 'taidi_data/train_texts.jsonl', train_image_ids)
-save_jsonl(data, 'taidi_data/val_texts.jsonl', val_image_ids)
+save_jsonl(data, 'taidi_data/valid_texts.jsonl', val_image_ids)
