@@ -46,13 +46,14 @@ def torch_version_str_compare_lessequal(version1, version2):
 
 def main():
     args = parse_args()
-
+    import os
+    os.environ["PL_TORCH_DISTRIBUTED_BACKEND"] = "gloo"
     # Set distributed group
     args.local_device_rank = int(os.environ["LOCAL_RANK"])
     torch.cuda.set_device(args.local_device_rank)
     args.device = torch.device("cuda", args.local_device_rank)
 
-    dist.init_process_group(backend="nccl")
+    dist.init_process_group(backend="gloo")
     args.rank = dist.get_rank()
     args.world_size = dist.get_world_size()
 

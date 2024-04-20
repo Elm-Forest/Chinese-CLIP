@@ -1,4 +1,5 @@
 import argparse
+import os
 
 
 def get_default_params(model_name):
@@ -28,7 +29,7 @@ def parse_args():
         help="Path to the LMDB directory with validation data split, default to None which disables validation",
     )
     parser.add_argument(
-        "--num-workers", type=int, default=4, help="The number of workers for training dataloader."
+        "--num-workers", type=int, default=0, help="The number of workers for training dataloader."
     )
     parser.add_argument(
         "--valid-num-workers", type=int, default=1, help="The number of workers for validation dataloader (if making validation)."
@@ -178,6 +179,12 @@ def parse_args():
         "--accum-freq",
         type=int,
         default=1,
+        help="Update the model every --acum-freq steps."
+    )
+    parser.add_argument(
+        "--local_rank",
+        type=int,
+        default=0,
         help="Update the model every --acum-freq steps."
     )
     parser.add_argument(
