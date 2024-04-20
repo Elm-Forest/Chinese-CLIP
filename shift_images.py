@@ -61,8 +61,7 @@ parser.add_argument('--save_dir', type=str, default="taidi_data/train_imgs.tsv",
 parser.add_argument('--val_count', type=int, default=0,
                     help='val_count')
 opts = parser.parse_args()
-if not os.path.exists('./taidi_data'):
-    os.makedirs('./taidi_data')
+
 # Example usage
 image_folder = opts.image_folder  # Set your image folder path
 val_count = opts.val_count  # Set the number of validation images
