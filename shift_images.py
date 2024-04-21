@@ -28,7 +28,7 @@ def extract_id(filename):
     return prefix_part + id_part  # Concatenate to form the full ID
 
 
-def save_images_to_tsv(image_folder, val_count, train_dir):
+def save_images_to_tsv(image_folder, val_count, train_dir, val_dir):
     """Saves images to .tsv files divided into train and validation sets."""
     files = [f for f in os.listdir(image_folder) if f.endswith('.jpg')]
     files.sort()  # Optional: sort files to maintain a consistent order
@@ -48,8 +48,7 @@ def save_images_to_tsv(image_folder, val_count, train_dir):
     # Write training and validation files
     write_to_file(train_files, train_dir)
     if val_count != 0:
-        write_to_file(val_files, "taidi_data/valid_imgs.tsv")
-
+        write_to_file(val_files, val_dir)
 
 
 warnings.filterwarnings('ignore')
@@ -58,6 +57,8 @@ parser.add_argument('--image_folder', type=str, default='K:\dataset\B题-数据\
                     help='image_folder')
 parser.add_argument('--save_dir', type=str, default="taidi_data/train_imgs.tsv",
                     help='save_dir')
+parser.add_argument('--val_dir', type=str, default="taidi_data/valid_imgs.tsv",
+                    help='save_dir')
 parser.add_argument('--val_count', type=int, default=0,
                     help='val_count')
 opts = parser.parse_args()
@@ -65,4 +66,4 @@ opts = parser.parse_args()
 # Example usage
 image_folder = opts.image_folder  # Set your image folder path
 val_count = opts.val_count  # Set the number of validation images
-save_images_to_tsv(image_folder, val_count, opts.save_dir)
+save_images_to_tsv(image_folder, val_count, opts.save_dir, opts.val_dir)
