@@ -61,6 +61,8 @@ parser.add_argument('--save_dir', type=str, default="taidi_data/train_imgs.tsv",
                     help='save_dir')
 parser.add_argument('--val_dir', type=str, default="taidi_data/valid_imgs.tsv",
                     help='save_dir')
+parser.add_argument('--only_val', type=int, default=0,
+                    help='save_dir')
 parser.add_argument('--val_count', type=int, default=0,
                     help='val_count')
 opts = parser.parse_args()
@@ -68,4 +70,4 @@ opts = parser.parse_args()
 # Example usage
 image_folder = opts.image_folder  # Set your image folder path
 val_count = opts.val_count  # Set the number of validation images
-save_images_to_tsv(image_folder, val_count, opts.save_dir, opts.val_dir)
+save_images_to_tsv(image_folder, val_count, opts.save_dir, opts.val_dir, opts.only_val)
