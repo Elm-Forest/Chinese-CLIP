@@ -46,7 +46,7 @@ def save_images_to_tsv(image_folder, val_count, train_dir, val_dir, only_val=0):
                 base64_img = trans_per_img(img_path)
                 f.write(f"{img_id}\t{base64_img}\n")
 
-    if only_val != 0 & val_count != 0:
+    if only_val != 0 and val_count != 0:
         print('only valid!')
         write_to_file(val_files, val_dir)
         return
