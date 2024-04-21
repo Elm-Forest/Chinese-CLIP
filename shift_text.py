@@ -56,6 +56,10 @@ parser.add_argument('--train_tsv_path', type=str, default='taidi_data/train_imgs
                     help='train_tsv_path')
 parser.add_argument('--val_tsv_path', type=str, default='taidi_data/valid_imgs.tsv',
                     help='val_tsv_path')
+parser.add_argument('--train_jsonl_path', type=str, default='taidi_data/train_texts.jsonl',
+                    help='save_jsonl_path')
+parser.add_argument('--val_jsonl_path', type=str, default='taidi_data/valid_texts.jsonl',
+                    help='save_jsonl_path')
 opts = parser.parse_args()
 # Paths to your files
 data_csv_path = opts.data_csv_path  # Your data.csv path
@@ -66,5 +70,5 @@ data = load_data_csv(data_csv_path)
 train_image_ids = set(load_image_splits(train_tsv_path))
 val_image_ids = set(load_image_splits(val_tsv_path))
 # Save to JSONL files
-save_jsonl(data, 'taidi_data/train_texts.jsonl', train_image_ids)
-save_jsonl(data, 'taidi_data/valid_texts.jsonl', val_image_ids)
+save_jsonl(data, opts.train_jsonl_path, train_image_ids)
+save_jsonl(data, opts.val_jsonl_path, val_image_ids)
