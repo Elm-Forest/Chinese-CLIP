@@ -121,7 +121,26 @@ def main():
 
     if args.use_bn_sync:
         model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
+    if args.unfreeze_vision_layer_num != 0 and args.freeze_part_layer:
+        len_resblocks = len(model.visual.transformer.resblocks)
+        for k, v in model.visual.named_parameters():
+            v.requires_grad = False
+        for i in range(1, args.unfreeze_vision_layer_num + 1):
+            for k, v in model.visual.transformer.resblocks[len_resblocks - i].named_parameters():
+                v.requires_grad = True
+        model.visual.proj.requires_grad = True
+        for k, v in model.visual.ln_post.named_parameters():
+            v.requires_grad = True
+        print(f'freeze vit, without post {args.unfreeze_vision_layer_num} layers')
 
+    if args.unfreeze_bert_layer_num != 0 and args.freeze_part_layer:
+        len_bert = len(model.bert.encoder.layer)
+        for k, v in model.bert.named_parameters():
+            v.requires_grad = False
+        for i in range(1, args.unfreeze_bert_layer_num + 1):
+            for k, v in model.bert.encoder.layer[len_bert - i].named_parameters():
+                v.requires_grad = True
+        print(f'freeze bert, without post {args.unfreeze_bert_layer_num} layers')
     if args.freeze_vision:
         for k, v in model.visual.named_parameters():
             v.requires_grad = False

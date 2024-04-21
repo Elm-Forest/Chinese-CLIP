@@ -152,6 +152,24 @@ def parse_args():
         help="Freeze the weight of vision encoder.",
     )
     parser.add_argument(
+        "--freeze_part_layer",
+        action="store_true",
+        default=False,
+        help="Freeze the weight of part layers.",
+    )
+    parser.add_argument(
+        "--unfreeze_vision_layer_num",
+        default=0,
+        type=int,
+        help="unfreeze_vision_layer_num",
+    )
+    parser.add_argument(
+        "--unfreeze_bert_layer_num",
+        default=0,
+        type=int,
+        help="unfreeze_bert_layer_num",
+    )
+    parser.add_argument(
         "--text-model",
         choices=["RoBERTa-wwm-ext-base-chinese", "RoBERTa-wwm-ext-large-chinese", "RBT3-chinese"],
         default="RoBERTa-wwm-ext-base-chinese",
@@ -218,6 +236,12 @@ def parse_args():
         default=False,
         action="store_true",
         help="If true, more information is logged."
+    )
+    parser.add_argument(
+        "--teacher_model_dir",
+        default=None,
+        type=str,
+        help="teacher_model_dir"
     )
     parser.add_argument(
         "--teacher-model-name",
