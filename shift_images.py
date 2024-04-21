@@ -28,7 +28,7 @@ def extract_id(filename):
     return prefix_part + id_part  # Concatenate to form the full ID
 
 
-def save_images_to_tsv(image_folder, val_count, train_dir, val_dir, only_val=False):
+def save_images_to_tsv(image_folder, val_count, train_dir, val_dir, only_val=0):
     """Saves images to .tsv files divided into train and validation sets."""
     files = [f for f in os.listdir(image_folder) if f.endswith('.jpg')]
     files.sort()  # Optional: sort files to maintain a consistent order
@@ -39,17 +39,25 @@ def save_images_to_tsv(image_folder, val_count, train_dir, val_dir, only_val=Fal
     def write_to_file(files, filename):
         with open(filename, 'w') as f:
             for i, file in enumerate(files):
-                print(i)
+                if i % 100 == 0:
+                    print(i)
                 img_path = os.path.join(image_folder, file)
                 img_id = extract_id(file)
                 base64_img = trans_per_img(img_path)
                 f.write(f"{img_id}\t{base64_img}\n")
 
-    if only_val & val_count != 0:
+    if only_val != 0 & val_count != 0:
+        print('only valid!')
         write_to_file(val_files, val_dir)
+        return
     # Write training and validation files
+    if val_count != 0:
+        print('prepare train!')
+    else:
+        print('prepare test!')
     write_to_file(train_files, train_dir)
     if val_count != 0:
+        print('prepare valid!')
         write_to_file(val_files, val_dir)
 
 
