@@ -225,7 +225,7 @@ class Transformer(nn.Module):
         if end == -1:
             end = self.layers
         if self.grad_checkpointing and not torch.jit.is_scripting():
-            for r in self.resblocks:
+            for r in self.resblocks[start: end]:
                 x = checkpoint(r, x)
             return x
         return self.resblocks[start: end](x)
@@ -234,6 +234,7 @@ class Transformer(nn.Module):
 class LinearProj(nn.Module):
     def __init__(self, inc, outc):
         super().__init__()
+        self.grad_checkpointing = False
         self.linear_proj = nn.Sequential(OrderedDict([
             ("c_fc", nn.Linear(inc, outc)),
             ("gelu", QuickGELU()),
@@ -241,6 +242,9 @@ class LinearProj(nn.Module):
         ]))
 
     def forward(self, x: torch.Tensor):
+        if self.grad_checkpointing and not torch.jit.is_scripting():
+            x = checkpoint(self.linear_proj, x)
+            return x
         return self.linear_proj(x)
 
 
@@ -274,14 +278,23 @@ class VisualTransformer(nn.Module):
     @torch.jit.ignore
     def set_grad_checkpointing(self, enable=True):
         self.transformer.grad_checkpointing = enable
+        self.vit_layer4_1.grad_checkpointing = enable
+        self.vit_layer4_2.grad_checkpointing = enable
+        self.vit_layer4_3.grad_checkpointing = enable
+        self.vit_layer4_4.grad_checkpointing = enable
+        self.vit_layer8_1.grad_checkpointing = enable
+        self.linear_proj1.grad_checkpointing = enable
+        self.linear_proj2.grad_checkpointing = enable
+        self.linear_proj3.grad_checkpointing = enable
+        self.linear_proj4.grad_checkpointing = enable
+
 
     def random_masking(self, x, mask_ratio):
         N, L, D = x.shape  # batch, length, dim
         len_keep = int((L - 1) * (1 - mask_ratio))
 
         noise = torch.rand(N, L - 1, device=x.device)
-        ids_shuffle = torch.argsort(noise, dim=1) + torch.ones(N, L - 1, device=x.device,
-                                                               dtype=int)
+        ids_shuffle = torch.argsort(noise, dim=1) + torch.ones(N, L - 1, device=x.device, dtype=int)
         ids_keep = ids_shuffle[:, :len_keep]
 
         x_masked = torch.gather(x, dim=1, index=ids_keep.unsqueeze(-1).repeat(1, 1, D))
