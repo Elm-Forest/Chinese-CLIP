@@ -154,7 +154,7 @@ def parse_args():
     parser.add_argument(
         "--freeze_part_layer",
         action="store_true",
-        default=False,
+        default=True,
         help="Freeze the weight of part layers.",
     )
     parser.add_argument(

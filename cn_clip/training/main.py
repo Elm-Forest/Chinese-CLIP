@@ -122,7 +122,7 @@ def main():
 
     if args.use_bn_sync:
         model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
-    if args.unfreeze_vision_layer_num != 0 and args.freeze_part_layer:
+    if args.unfreeze_vision_layer_num != -1 and args.freeze_part_layer:
         len_resblocks = len(model.visual.transformer.resblocks)
         for k, v in model.visual.named_parameters():
             v.requires_grad = False
@@ -132,15 +132,35 @@ def main():
         model.visual.proj.requires_grad = True
         for k, v in model.visual.ln_post.named_parameters():
             v.requires_grad = True
+        for k, v in model.visual.vit_layer4_1.named_parameters():
+            v.requires_grad = True
+        for k, v in model.visual.vit_layer4_2.named_parameters():
+            v.requires_grad = True
+        for k, v in model.visual.vit_layer4_3.named_parameters():
+            v.requires_grad = True
+        for k, v in model.visual.vit_layer4_4.named_parameters():
+            v.requires_grad = True
+        for k, v in model.visual.vit_layer8_1.named_parameters():
+            v.requires_grad = True
+        for k, v in model.visual.linear_proj1.named_parameters():
+            v.requires_grad = True
+        for k, v in model.visual.linear_proj2.named_parameters():
+            v.requires_grad = True
+        for k, v in model.visual.linear_proj3.named_parameters():
+            v.requires_grad = True
+        for k, v in model.visual.linear_proj4.named_parameters():
+            v.requires_grad = True
         print(f'freeze vit, without post {args.unfreeze_vision_layer_num} layers')
 
-    if args.unfreeze_bert_layer_num != 0 and args.freeze_part_layer:
+    if args.unfreeze_bert_layer_num != -1 and args.freeze_part_layer:
         len_bert = len(model.bert.encoder.layer)
         for k, v in model.bert.named_parameters():
             v.requires_grad = False
         for i in range(1, args.unfreeze_bert_layer_num + 1):
             for k, v in model.bert.encoder.layer[len_bert - i].named_parameters():
                 v.requires_grad = True
+        for k, v in model.bert.encoder.layer_post.named_parameters():
+            v.requires_grad = True
         print(f'freeze bert, without post {args.unfreeze_bert_layer_num} layers')
 
     if args.freeze_vision:
@@ -243,7 +263,15 @@ def main():
             if args.use_flash_attention:
                 sd = convert_state_dict(sd)
             # Load the state dict
-            model.load_state_dict(sd)
+            model.load_state_dict(sd, strict=False)
+            model.module.visual.vit_layer4_1.load_state_dict(model.module.visual.transformer.state_dict(), strict=False)
+            model.module.visual.vit_layer4_2.load_state_dict(model.module.visual.transformer.state_dict(), strict=False)
+            model.module.visual.vit_layer4_3.load_state_dict(model.module.visual.transformer.state_dict(), strict=False)
+            model.module.visual.vit_layer4_4.load_state_dict(model.module.visual.transformer.state_dict(), strict=False)
+            model.module.visual.vit_layer8_1.load_state_dict(model.module.visual.transformer.state_dict(), strict=False)
+            model.module.bert.encoder.layer_post.load_state_dict(model.module.bert.encoder.layer.state_dict(),
+                                                                 strict=False)
+
             # Restore the epoch and steps info, reload the dataset and dataloader for the resume epoch
             if not args.reset_data_offset:
                 start_epoch = checkpoint["epoch"]
